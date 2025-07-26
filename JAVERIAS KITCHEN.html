@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javeria's Kitchen | Food Recipes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern CSS Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: #f9f9f9;
+            color: #333;
+            overflow-x: hidden;
+        }
+        header {
+            background: #ff6b6b;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255,107,107,0.3);
+            background: #ff5252;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+        .btn-outline:hover {
+            background: #ff6b6b;
+            color: white;
+        }
+        .recipes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .card:hover img {
+            transform: scale(1.05);
+        }
+        .card-content {
+            padding: 1.5rem;
+        }
+        .card h3 {
+            margin-bottom: 0.5rem;
+            color: #ff6b6b;
+        }
+        .card p {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #333;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+            nav a {
+                margin-left: 1rem;
+                font-size: 0.9rem;
+            }
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            header h1 {
+                margin-bottom: 0.5rem;
+            }
+        }
+        
+        /* Recipe Pages Styling */
+        .recipe-page {
+            display: none;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .recipe-page.active {
+            display: block;
+        }
+        .recipe-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #ff6b6b;
+        }
+        .recipe-header h2 {
+            color: #ff6b6b;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .recipe-header img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 1rem 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .recipe-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .ingredients, .instructions {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .ingredients h3, .instructions h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .ingredients ul {
+            list-style-type: none;
+            padding-left: 1rem;
+        }
+        .ingredients li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .ingredients li:before {
+            content: "•";
+            color: #ff6b6b;
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+        .instructions ol {
+            padding-left: 1.5rem;
+        }
+        .instructions li {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .back-btn {
+            display: inline-block;
+            margin: 2rem 0;
+            background: #333;
+            color: white;
+        }
+        .back-btn:hover {
+            background: #555;
+        }
+        
+        /* Category Navigation */
+        .category-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1rem 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        .category-btn {
+            padding: 0.5rem 1.5rem;
+            background: #f1f1f1;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .category-btn:hover, .category-btn.active {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .recipe-page {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Featured Recipe */
+        .featured-recipe {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            margin: 3rem auto;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .featured-image {
+            flex: 1;
+            min-width: 300px;
+        }
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .featured-content {
+            flex: 1;
+            padding: 2rem;
+            min-width: 300px;
+        }
+        .featured-content h3 {
+            color: #ff6b6b;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .featured-content p {
+            margin-bottom: 1.5rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        .section-title {
+            text-align: center;
+            margin: 2rem 0;
+            color: #333;
+            position: relative;
+        }
+        .section-title:after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: #ff6b6b;
+            margin: 0.5rem auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <h1><i class="fas fa-utensils"></i> Javeria's Kitchen</h1>
+        <nav>
+            <a href="#home" class="nav-link" data-page="home">Home</a>
+            <a href="#recipes" class="nav-link" data-page="recipes">Recipes</a>
+            <a href="https://www.youtube.com/@JAVERIASKITCHEN-oj6zc" target="_blank">YouTube</a>
+	    <a href="https://www.facebook.com/people/Javerias-Kitchen/100092892788880/" target="_blank">Facebook</a>
+            <a href="#about">About</a>
+        </nav>
+    </header>
+
+    <!-- Home Page -->
+    <div id="home-page">
+        <!-- Hero Banner -->
+        <section class="hero" id="home">
+            <h2>Authentic Recipes Made Easy</h2>
+            <p>Join 100,000+ food lovers exploring delicious recipes!</p>
+            <a href="https://www.youtube.com/@JAVERIASKITCHEN-oj6zc" class="btn" target="_blank">
+                <i class="fab fa-youtube"></i> Subscribe on YouTube
+            </a>
+        </section>
+
+        <!-- Featured Recipe -->
+        <h2 class="section-title">Today's Special</h2>
+        <div class="featured-recipe">
+            <div class="featured-image">
+                <img src="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Chicken Biryani">
+            </div>
+            <div class="featured-content">
+                <h3>Hyderabadi Chicken Biryani</h3>
+                <p>Aromatic basmati rice layered with marinated chicken and caramelized onions, slow-cooked to perfection. This royal dish from the kitchens of Hyderabad is a celebration of flavors.</p>
+                <p><i class="fas fa-clock"></i> Prep: 30 min | Cook: 1 hour | Serves: 4</p>
+                <button class="btn view-recipes" data-category="desi">View Recipe</button>
+            </div>
+        </div>
+
+        <!-- Category Navigation -->
+        <div class="category-nav">
+            <button class="category-btn active" data-category="all">All Recipes</button>
+            <button class="category-btn" data-category="desi">Desi</button>
+            <button class="category-btn" data-category="chinese">Chinese</button>
+            <button class="category-btn" data-category="drinks">Drinks</button>
+        </div>
+
+        <!-- Recipe Cards -->
+        <section class="recipes" id="recipes">
+            <div class="card" data-category="desi">
+                <img src="https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Desi Food">
+                <div class="card-content">
+                    <h3>Desi Recipes</h3>
+                    <p>Biryani, Karahi, Nihari & more traditional dishes.</p>
+                    <button class="btn view-recipes" data-category="desi">View Recipes</button>
+                </div>
+            </div>
+            <div class="card" data-category="chinese">
+                <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Chinese Food">
+                <div class="card-content">
+                    <h3>Chinese Recipes</h3>
+                    <p>Noodles, Manchurian, Fried Rice & more.</p>
+                    <button class="btn view-recipes" data-category="chinese">View Recipes</button>
+                </div>
+            </div>
+            <div class="card" data-category="drinks">
+                <img src="https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Drinks">
+                <div class="card-content">
+                    <h3>Drinks & Beverages</h3>
+                    <p>Lassi, Smoothies, Cocktails & refreshing drinks.</p>
+                    <button class="btn view-recipes" data-category="drinks">View Recipes</button>
+                </div>
+            </div>
+            <div class="card" data-category="desi">
+                <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Karahi">
+                <div class="card-content">
+                    <h3>Chicken Karahi</h3>
+                    <p>Spicy and aromatic chicken curry cooked in a traditional wok.</p>
+                    <button class="btn view-recipes" data-category="desi">View Recipe</button>
+                </div>
+            </div>
+            <div class="card" data-category="chinese">
+                <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Noodles">
+                <div class="card-content">
+                    <h3>Hakka Noodles</h3>
+                    <p>Stir-fried noodles with fresh vegetables and savory sauces.</p>
+                    <button class="btn view-recipes" data-category="chinese">View Recipe</button>
+                </div>
+            </div>
+            <div class="card" data-category="drinks">
+                <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Mango Lassi">
+                <div class="card-content">
+                    <h3>Mango Lassi</h3>
+                    <p>Creamy yogurt drink blended with sweet mango pulp.</p>
+                    <button class="btn view-recipes" data-category="drinks">View Recipe</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Recipe Pages -->
+    <div id="desi-recipes" class="recipe-page">
+        <div class="recipe-header">
+            <h2>Desi Recipes</h2>
+            <p>Authentic Pakistani and Indian dishes that will transport you to the streets of Lahore or Delhi</p>
+            <img src="https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Desi Cuisine">
+        </div>
+        
+        <div class="recipe-content">
+            <div class="ingredients">
+                <h3>Featured Recipe: Chicken Biryani</h3>
+                <h4>Ingredients</h4>
+                <ul>
+                    <li>2 cups Basmati rice</li>
+                    <li>1 kg chicken, cut into pieces</li>
+                    <li>3 onions, thinly sliced</li>
+                    <li>2 tomatoes, chopped</li>
+                    <li>1 cup yogurt</li>
+                    <li>4 cloves garlic, minced</li>
+                    <li>1 inch ginger, grated</li>
+                    <li>2 green chilies, slit</li>
+                    <li>1/2 cup chopped mint leaves</li>
+                    <li>1/2 cup chopped cilantro</li>
+                    <li>Whole spices: 4 green cardamoms, 4 cloves, 2-inch cinnamon stick</li>
+                    <li>1 tsp turmeric powder</li>
+                    <li>1 tbsp biryani masala</li>
+                    <li>1/2 cup cooking oil or ghee</li>
+                    <li>Saffron strands soaked in 1/4 cup warm milk</li>
+                    <li>Salt to taste</li>
+                </ul>
+            </div>
+            
+            <div class="instructions">
+                <h4>Instructions</h4>
+                <ol>
+                    <li>Wash and soak rice for 30 minutes. Boil rice until 70% cooked, then drain and set aside.</li>
+                    <li>Heat oil in a heavy-bottomed pan. Fry onions until golden brown. Remove half for garnish.</li>
+                    <li>Add whole spices to remaining onions, sauté for 30 seconds.</li>
+                    <li>Add ginger-garlic paste and green chilies, sauté for 2 minutes.</li>
+                    <li>Add chicken pieces and cook until they change color.</li>
+                    <li>Add chopped tomatoes, turmeric, biryani masala, and salt. Cook until tomatoes soften.</li>
+                    <li>Add yogurt, half of mint, and cilantro. Cook until chicken is tender and oil separates.</li>
+                    <li>In a separate pot, layer half of the rice, then the chicken masala, then remaining rice.</li>
+                    <li>Sprinkle fried onions, remaining mint, cilantro, and saffron milk on top.</li>
+                    <li>Cover with tight lid and cook on low heat for 20-25 minutes (dum cooking).</li>
+                    <li>Mix gently before serving. Enjoy with raita!</li>
+                </ol>
+            </div>
+        </div>
+        
+        <button class="btn back-btn"><i class="fas fa-arrow-left"></i> Back to Recipes</button>
+    </div>
+    
+    <div id="chinese-recipes" class="recipe-page">
+        <div class="recipe-header">
+            <h2>Chinese Recipes</h2>
+            <p>Delicious and easy-to-make Chinese dishes with authentic flavors</p>
+            <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Chinese Cuisine">
+        </div>
+        
+        <div class="recipe-content">
+            <div class="ingredients">
+                <h3>Featured Recipe: Vegetable Manchurian</h3>
+                <h4>Ingredients</h4>
+                <ul>
+                    <li>2 cups finely chopped mixed vegetables (cabbage, carrots, beans)</li>
+                    <li>1/2 cup all-purpose flour</li>
+                    <li>1/4 cup cornflour</li>
+                    <li>1 tsp ginger-garlic paste</li>
+                    <li>2 green chilies, finely chopped</li>
+                    <li>1 tsp soy sauce</li>
+                    <li>Salt to taste</li>
+                    <li>Oil for frying</li>
+                    <li>For Sauce: 1 tbsp oil, 1 onion chopped, 1 capsicum diced, 2 garlic cloves minced, 1 inch ginger grated, 2 tbsp soy sauce, 1 tbsp chili sauce, 1 tbsp tomato ketchup, 1 tsp vinegar, 1 tsp sugar, 1 cup vegetable stock, 1 tsp cornflour mixed in 2 tbsp water</li>
+                    <li>Spring onions for garnish</li>
+                </ul>
+            </div>
+            
+            <div class="instructions">
+                <h4>Instructions</h4>
+                <ol>
+                    <li>Mix vegetables, flour, cornflour, ginger-garlic paste, green chilies, soy sauce and salt. Add little water to make a thick mixture.</li>
+                    <li>Shape into small balls and deep fry until golden brown. Drain on paper towels.</li>
+                    <li>For sauce: Heat oil, sauté onions, capsicum, ginger and garlic for 2 minutes.</li>
+                    <li>Add soy sauce, chili sauce, tomato ketchup, vinegar, sugar and salt. Stir well.</li>
+                    <li>Add vegetable stock and bring to a simmer.</li>
+                    <li>Add cornflour mixture and cook until sauce thickens.</li>
+                    <li>Add fried vegetable balls to the sauce and toss gently.</li>
+                    <li>Garnish with chopped spring onions. Serve hot with fried rice or noodles.</li>
+                </ol>
+            </div>
+        </div>
+        
+        <button class="btn back-btn"><i class="fas fa-arrow-left"></i> Back to Recipes</button>
+    </div>
+    
+    <div id="drinks-recipes" class="recipe-page">
+        <div class="recipe-header">
+            <h2>Drinks & Beverages</h2>
+            <p>Refreshing drinks to cool you down and complement your meals</p>
+            <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Drinks">
+        </div>
+        
+        <div class="recipe-content">
+            <div class="ingredients">
+                <h3>Featured Recipe: Mango Lassi</h3>
+                <h4>Ingredients</h4>
+                <ul>
+                    <li>2 cups ripe mango pulp (fresh or canned)</li>
+                    <li>2 cups plain yogurt</li>
+                    <li>1/2 cup cold milk</li>
+                    <li>4 tbsp sugar or honey (adjust to taste)</li>
+                    <li>1/2 tsp cardamom powder (optional)</li>
+                    <li>Ice cubes (optional)</li>
+                    <li>For garnish: chopped pistachios or a mint sprig</li>
+                </ul>
+            </div>
+            
+            <div class="instructions">
+                <h4>Instructions</h4>
+                <ol>
+                    <li>In a blender, combine mango pulp, yogurt, milk, sugar/honey, and cardamom powder.</li>
+                    <li>Blend until smooth and creamy. Taste and adjust sweetness if needed.</li>
+                    <li>If the lassi is too thick, add a little more milk to reach desired consistency.</li>
+                    <li>For a chilled version, add ice cubes and blend again.</li>
+                    <li>Pour into glasses and garnish with chopped pistachios or a mint sprig.</li>
+                    <li>Serve immediately. Enjoy this refreshing summer drink!</li>
+                </ol>
+                <p><strong>Variations:</strong> For strawberry lassi, replace mango with 2 cups fresh strawberries. For savory lassi, omit sugar and mango, add roasted cumin powder and salt.</p>
+            </div>
+        </div>
+        
+        <button class="btn back-btn"><i class="fas fa-arrow-left"></i> Back to Recipes</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Javeria's Kitchen. All rights reserved.</p>
+        <p>Follow us: 
+            <!-- Updated Facebook link in footer -->
+<a href="https://www.facebook.com/people/Javerias-Kitchen/100092892788880/" target="_blank" style="color: #ff6b6b;">
+    <i class="fab fa-facebook"></i>
+</a> 
+            <a href="#" style="color: #ff6b6b;"><i class="fab fa-instagram"></i></a> 
+            <a href="https://www.youtube.com/@JAVERIASKITCHEN-oj6zc" target="_blank" style="color: #ff6b6b;"><i class="fab fa-youtube"></i></a>
+        </p>
+    </footer>
+
+    <script>
+        // JavaScript to handle recipe navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // View Recipes buttons
+            const viewRecipeButtons = document.querySelectorAll('.view-recipes');
+            const backButtons = document.querySelectorAll('.back-btn');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            
+            // Hide all recipe pages initially
+            document.querySelectorAll('.recipe-page').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Show home page by default
+            document.getElementById('home-page').style.display = 'block';
+            
+            // View Recipes functionality
+            viewRecipeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    
+                    // Hide all pages
+                    document.getElementById('home-page').style.display = 'none';
+                    document.querySelectorAll('.recipe-page').forEach(page => {
+                        page.classList.remove('active');
+                        page.style.display = 'none';
+                    });
+                    
+                    // Show the selected recipe page
+                    const recipePage = document.getElementById(`${category}-recipes`);
+                    if (recipePage) {
+                        recipePage.classList.add('active');
+                        recipePage.style.display = 'block';
+                        
+                        // Scroll to the top
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            });
+            
+            // Back to Recipes functionality
+            backButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Hide all recipe pages
+                    document.querySelectorAll('.recipe-page').forEach(page => {
+                        page.classList.remove('active');
+                        page.style.display = 'none';
+                    });
+                    
+                    // Show home page
+                    document.getElementById('home-page').style.display = 'block';
+                    
+                    // Scroll to recipes section
+                    document.getElementById('recipes').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+            
+            // Navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    
+                    if (page === 'home') {
+                        // Show home page
+                        document.getElementById('home-page').style.display = 'block';
+                        document.querySelectorAll('.recipe-page').forEach(p => {
+                            p.style.display = 'none';
+                        });
+                        
+                        // Scroll to top
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                    else if (page === 'recipes') {
+                        // Show home page and scroll to recipes
+                        document.getElementById('home-page').style.display = 'block';
+                        document.querySelectorAll('.recipe-page').forEach(p => {
+                            p.style.display = 'none';
+                        });
+                        
+                        document.getElementById('recipes').scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+            
+            // Category filtering
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active button
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    const cards = document.querySelectorAll('.card');
+                    
+                    cards.forEach(card => {
+                        if (category === 'all' || card.getAttribute('data-category') === category) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
